@@ -1,7 +1,7 @@
-import requests
 import json
-from flask import Flask
 
+import requests
+from flask import Flask
 
 app = Flask(__name__)
 
