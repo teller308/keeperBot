@@ -3,3 +3,5 @@ deploy.sh
 src/config.json
 src/__pycache__/*
 .vscode/*
+.mypy_cache/*
+private/*
