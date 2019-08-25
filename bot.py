@@ -46,7 +46,7 @@ def setWebhook():
 @application.route('/{}'.format(_TOKEN), methods=['POST'])
 def porcess_wh_response():
     recieved_data = request.json
-    print('request.json: ', str(recieved_data))
+    # print('request.json: ', str(recieved_data))
     prepared_data = {}
     prepared_data['chat_id'] = recieved_data['message']['chat']['id']
     prepared_data['text'] = 'I got: {}'.format(
@@ -59,7 +59,7 @@ def porcess_wh_response():
 @application.route('/')
 def process_all():
     # setWebhook()
-    print('request.json: ', str(request.json))
+    # print('request.json: ', str(request.json))
     return 'Hello from BOT'
 
 
