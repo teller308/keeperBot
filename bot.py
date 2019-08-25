@@ -3,7 +3,7 @@ import json
 import requests
 from flask import Flask, request
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 
 with open('private/config.json') as config:
@@ -12,10 +12,8 @@ with open('private/config.json') as config:
 
 _TOKEN = config_dict['TOKEN']
 _FQDN = config_dict['FQDN']
-_PORT = 8443
-_SSL_CONTEXT = (config_dict['SSL_CONTEXT']['CERT'],
-                config_dict['SSL_CONTEXT']['KEY'])
-_CERT_FILE = _SSL_CONTEXT[0]
+_PORT = 443
+_CERT_CHAIN = config_dict['SSL_CONTEXT']['CERT']
 
 _API_URL = 'https://api.telegram.org/bot' + _TOKEN
 _GET_UPDATES = '/getUpdates'
@@ -31,33 +29,32 @@ def setWebhook():
     resp = requests.get(_API_URL + _DELETE_WEBHOOK)
     print(resp.text)
 
-    with open(_CERT_FILE) as _CERTIFICATE:
+    with open(_CERT_CHAIN) as _CERTIFICATE:
         webhook_data = {'url': 'https://{}:{}/{}'.format(_FQDN, _PORT, _TOKEN),
                         'certificate': _CERTIFICATE, }
 
-        print('Try POST webhook URL: {}'.format(_API_URL + _SET_WEBHOOK))
+        print('Try POST webhook URL: {}'.format(
+            _API_URL + _SET_WEBHOOK))
         resp = requests.post(url=_API_URL + _SET_WEBHOOK,
                              data=webhook_data,
-                             verify=_CERT_FILE,
+                             # verify=_CERT_KEY,
+                             # verify=True,
                              )
         print('Response: {}'.format(resp.text))
 
 
-@app.route('/{}'.format(_TOKEN), methods=['POST'])
+@application.route('/{}'.format(_TOKEN), methods=['POST'])
 def porcess_wh_response():
-    print(request.json)
+    print('request.json: ', str(request.json))
+    return 'New update recieved'
 
 
-@app.route('/')
+@application.route('/')
 def process_all():
-    print('Hello')
-    print(request.json)
+    setWebhook()
+    print('request.json: ', str(request.json))
+    return 'Hello from BOT'
 
 
 if __name__ == '__main__':
-    # setWebhook()
-
-    app.run(host=_FQDN,
-            port=_PORT,
-            ssl_context=_SSL_CONTEXT,
-            debug=True,)
+    application.run(debug=True)

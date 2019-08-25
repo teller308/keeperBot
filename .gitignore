@@ -1,6 +1,7 @@
 Pipfile.lock
 deploy.sh
-src/config.json
-src/__pycache__/*
 .vscode/*
 private/*
+*.pyc
+__pycache__/*
+hello.py
