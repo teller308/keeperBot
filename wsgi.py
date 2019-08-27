@@ -1,12 +1,15 @@
 import logging
-from bot import application
 
+from bot import application, config_dict
+from utils.webhook_context_manager import WebhookContextManager
+
+print(__name__)
+logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
-
-    # setup flask and gunicorn logs
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    application.logger.handlers = gunicorn_logger.handlers
-    application.logger.setLevel(gunicorn_logger.level)
-
-    application.run()
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug('before run')
+    with WebhookContextManager(**config_dict):
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('in whcm')
+        application.run(debug=True)

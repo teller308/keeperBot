@@ -5,3 +5,4 @@ private/*
 *.pyc
 __pycache__/*
 hello.py
+test/*

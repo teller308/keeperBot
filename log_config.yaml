@@ -1,0 +1,27 @@
+version: 1
+disable_existing_loggers: False
+root:
+  level: DEBUG
+  handlers: [console, fileHandler]
+formatters:
+  simple:
+    format: "[%(asctime)s] - %(name)s - %(levelname)s - %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: simple
+    stream: ext://sys.stdout
+  fileHandler:
+    class: logging.FileHandler
+    formatter: simple
+    filename: logs/application.log
+loggers:
+  wsgi:
+    level: DEBUG
+    handlers: [console, fileHandler]
+  bot:
+    level: DEBUG
+    handlers: [console, fileHandler]
+  utils.webhook_context_manager:
+    level: DEBUG
+    handlers: [console, fileHandler]
