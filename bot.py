@@ -59,9 +59,4 @@ def process_all():
 
 
 if __name__ == '__main__':
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug('SUKA BLYAT')
-    with WebhookContextManager(**config_dict):
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('SUKA BLYAT 2')
-        application.run(debug=True)
+    application.run(debug=True)
