@@ -7,7 +7,7 @@ from flask import Flask, request
 
 from utils.webhook_context_manager import WebhookContextManager
 
-print(__name__)
+
 application = Flask(__name__)
 
 
