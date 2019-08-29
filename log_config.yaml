@@ -2,7 +2,7 @@ version: 1
 disable_existing_loggers: False
 root:
   level: DEBUG
-  handlers: [console, fileHandler]
+  handlers: [console]
 formatters:
   simple:
     format: "[%(asctime)s] - %(name)s - %(levelname)s - %(message)s"
@@ -18,10 +18,10 @@ handlers:
 loggers:
   wsgi:
     level: DEBUG
-    handlers: [console, fileHandler]
+    handlers: [console]
   bot:
     level: DEBUG
-    handlers: [console, fileHandler]
-  utils.webhook_context_manager:
+    handlers: [fileHandler]
+  utils.webhookHelper:
     level: DEBUG
-    handlers: [console, fileHandler]
+    handlers: [fileHandler]

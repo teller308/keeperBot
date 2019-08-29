@@ -7,30 +7,28 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-class WebhookContextManager:
+class WebhookHelper:
     def __init__(self,
                  fqdn: str,
                  port: int,
                  token: str,
-                 api_url: str) -> None:
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('fqdn {}, port {}', fqdn, port)
-
+                 api_url: str
+                 ) -> None:
         self.fqdn = fqdn
         self.port = port
         self.token = token
         self.api_url = api_url
 
+        self.methods_uri = {}
         self.methods_uri['set'] = '/setWebhook'
         self.methods_uri['delete'] = '/deleteWebhook'
         self.methods_uri['get_info'] = '/getWebhookInfo'
 
         with open('private/config.json') as config:
             config_dict = json.load(config)
-            self._CERT_CHAIN = config_dict['CERT']
+            self._CERT_CHAIN = config_dict['cert']
 
-    def set_webhook(self) -> str:
-        # TODO check if webhook already set - nothing to do
+    def set_webhook(self) -> dict:
         with open(self._CERT_CHAIN) as _CERTIFICATE:
             webhook_data = {'url': 'https://{}:{}/{}'.format(
                 self.fqdn,
@@ -45,15 +43,17 @@ class WebhookContextManager:
                                  )
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug('set webhook response: {}'.format(resp.text))
-            return(resp.text)
+            return(resp.json())
 
-    def get_webhook(self) -> str:
+    def get_webhook(self) -> dict:
         resp = requests.get(self.api_url + self.methods_uri['get_info'])
-        self. logger.debug('get webhook response: {}'.format(resp.text))
-        return(resp.text)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('get webhook response: {}'.format(resp.text))
+            logger.debug('type of resp: {}'.format(type(resp.json())))
+        return(resp.json())
 
-    def delete_webhook(self) -> str:
+    def delete_webhook(self) -> dict:
         resp = requests.get(self.api_url + self.methods_uri['delete'])
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug('delete webhook response: {}'.format(resp.text))
-        return(resp.text)
+        return(resp.json())
