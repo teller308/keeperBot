@@ -41,19 +41,12 @@ class WebhookHelper:
             resp = requests.post(url=self.api_url + self.methods_uri['set'],
                                  data=webhook_data,
                                  )
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug('set webhook response: {}'.format(resp.text))
             return(resp.json())
 
     def get_webhook(self) -> dict:
         resp = requests.get(self.api_url + self.methods_uri['get_info'])
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('get webhook response: {}'.format(resp.text))
-            logger.debug('type of resp: {}'.format(type(resp.json())))
         return(resp.json())
 
     def delete_webhook(self) -> dict:
         resp = requests.get(self.api_url + self.methods_uri['delete'])
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug('delete webhook response: {}'.format(resp.text))
         return(resp.json())
