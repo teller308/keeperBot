@@ -5,7 +5,7 @@ import requests
 import yaml
 from flask import Flask, request
 
-from utils.webhookHelper import WebhookHelper
+from utils.webhook_helper import WebhookHelper
 
 
 application = Flask(__name__)
@@ -15,6 +15,7 @@ application = Flask(__name__)
 with open('log_config.yaml') as log_config:
     log_config_dict = yaml.safe_load(log_config)
 logging.config.dictConfig(log_config_dict)
+
 logger = logging.getLogger(__name__)
 
 

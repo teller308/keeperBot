@@ -13,6 +13,8 @@ requests = "*"
 flask = "*"
 gkeepapi = "*"
 pyyaml = "*"
+flask-sqlalchemy = "*"
+keyring = "*"
 
 [requires]
 python_version = "3.6"
