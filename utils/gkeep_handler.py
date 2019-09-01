@@ -15,7 +15,7 @@ class GKeepHandler():
         self.keep_instance = gkeepapi.Keep()
         self.authorized_users = []  # List of active Users
 
-    def log_in(self, user_id: int, email: str = '', password: str = '') -> str:
+    def log_in(self, user_id: int, email: str, password: str) -> str:
         self.keep_instance.login(email, password)
         token = self.keep_instance.getMasterToken()
         keyring.set_password(self.MASTER_TOKEN_NAME, email, token)
