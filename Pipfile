@@ -15,6 +15,7 @@ gkeepapi = "*"
 pyyaml = "*"
 flask-sqlalchemy = "*"
 keyring = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.6"

@@ -6,3 +6,4 @@ private/*
 __pycache__/*
 hello.py
 test/*
+logs/*
