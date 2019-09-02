@@ -13,5 +13,5 @@ class GKeepUser(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
 
     def __repr__(self):
-        return 'User {} - {}'.format(
+        return 'User {}:{} - {}'.format(
             self.tg_user_id, self.tg_username, self.email)
