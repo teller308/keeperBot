@@ -1,49 +1,47 @@
-import json
 import logging
 
-import requests
-from flask import Flask, request
+from flask import request
 
-application = Flask(__name__)
+from core import application
+from utils.gkeep_handler import GKeepHandler
+from utils.webhook_helper import WebhookHelper
+
 logger = logging.getLogger(__name__)
 
-# sensitive configuration data
-if application.config.get('FQDN') is None:
-    with open('private/config.json') as private_config:
-        config_dict = json.load(private_config)
-    application.config['FQDN'] = config_dict['fqdn']
-    application.config['CERT'] = config_dict['cert']
-    application.config['PORT'] = config_dict['port']
-    application.config['TOKEN'] = config_dict['token']
-    application.config['API_URL'] = 'https://api.telegram.org/bot' + \
-        application.config['TOKEN']
+# webhook setup
+webhookHelper = WebhookHelper(application.config)
+check_webhook_response = webhookHelper.get_webhook()
+if check_webhook_response['result']['url'] == '':
+    webhookHelper.set_webhook()
 
 
 @application.route('/{}'.format(application.config['TOKEN']), methods=['POST'])
 def porcess_wh_response():
-    # TODO move this paste of processing code to handler
-    recieved_data = request.json
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug('MESSAGE_ID {}'.format(
-            recieved_data['message']['message_id']))
-        logger.debug('USERNAME {}'.format(
-            recieved_data['message']['from']['username']))
+    try:
+        handler = GKeepHandler.get_instance()
+        recieved_data = request.json
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('FULL JSON RESPONCE {}'.format(recieved_data))
 
-    prepared_data = {}
-    if 'text' in recieved_data['message']:
-        prepared_data['chat_id'] = recieved_data['message']['chat']['id']
-        prepared_data['text'] = 'I got: {}'.format(
-            recieved_data['message']['text'])
-        requests.post(url='{}/sendMessage'.format(
-            application.config['API_URL']),
-            data=prepared_data)
-    else:
-        prepared_data['text'] = 'I got: {}'.format(recieved_data['message'])
-        requests.post(url='{}/sendMessage'.format(
-            application.config['API_URL']),
-            data=prepared_data)
-
-    return 'New update recieved'
+        if recieved_data.get('message') is not None:
+            entities = recieved_data['message'].get('entities')
+            if entities is not None:
+                entity_type = entities[0].get('type')
+                if entity_type == 'bot_command':
+                    user_id = recieved_data['message']['from']['id']
+                    credentials = recieved_data['message']['text'].split(' ')
+                    if len(credentials) < 3:
+                        logger.error('Wrong arguments.')
+                        return 'Wrong arguments.'
+                    email = credentials[1]
+                    pwd = credentials[2]
+                    handler.log_in(user_id, email, pwd)
+    except Exception as exc:
+        msg = 'Something went wrong in webhook processing {}'.format(exc)
+        logger.error(msg)
+    finally:
+        # TODO remove dev mode update skipping
+        return 'Proceed pls. We do not need update duplication now.'
 
 
 @application.route('/')

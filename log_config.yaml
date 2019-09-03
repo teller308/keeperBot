@@ -1,7 +1,7 @@
 version: 1
 disable_existing_loggers: False
 root:
-  level: DEBUG
+  level: INFO
   handlers: [console]
 formatters:
   simple:
@@ -17,11 +17,20 @@ handlers:
     filename: logs/application.log
 loggers:
   wsgi:
-    level: DEBUG
+    level: INFO
     handlers: [console]
   bot:
     level: DEBUG
-    handlers: [fileHandler]
-  utils.webhookHelper:
+    handlers: [console]
+  core:
+    level: INFO
+    handlers: [console]
+  utils.webhook_helper:
+    level: INFO
+    handlers: [console]
+  utils.gkeep_handler:
     level: DEBUG
-    handlers: [fileHandler]
+    handlers: [console]
+  models.gkeep_user:
+    level: INFO
+    handlers: [console]
