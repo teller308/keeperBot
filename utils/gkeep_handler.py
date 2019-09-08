@@ -135,6 +135,8 @@ class GKeepHandler:
                 content.append(text)
                 if text[-1] != '\n':
                     content.append('\n')
+        if len(content) == 0:
+            return 'I found nothing.'
         return ('\n').join(el for el in content)
 
     def _update_note(self, *args: tuple) -> str:
@@ -153,10 +155,14 @@ class GKeepHandler:
             return 'Please use this format:\n/delete [note_title].'
         name, _ = args
         gnotes = self._keep_instance.find(query=name)
+        deleted_notes = []
         for note in gnotes:
+            deleted_notes.append(note.title)
             note.delete()
         self._keep_instance.sync()
-        return 'Cleared.'
+        if len(deleted_notes) == 0:
+            return 'No matches found with {}.'.format(name)
+        return 'Cleared:\n{}'.format('\n'.join(deleted_notes))
 
     def _list_notes(self, *args: tuple) -> str:
         gnotes = self._keep_instance.all()
