@@ -190,33 +190,35 @@ class GKeepHandler:
 
     def router(self, recieved_data: dict) -> str:
         answer_dict = {}
-        user_id = recieved_data['message']['from']['id']
-        answer_dict['chat_id'] = user_id
+        if recieved_data.get('message'):
+            user_id = recieved_data['message']['from']['id']
+            answer_dict['chat_id'] = user_id
 
-        try:
-            if self._is_command(recieved_data) is True:
-                input_data_list = recieved_data['message']['text'].split(' ')
-                input_data_list.append(user_id)
+            try:
+                if self._is_command(recieved_data) is True:
+                    input_data_list = recieved_data['message']['text'].split(
+                        ' ')
+                    input_data_list.append(user_id)
 
-                command = input_data_list.pop(0).replace('/', '')
+                    command = input_data_list.pop(0).replace('/', '')
 
-                if command in self._required_login_cmd_list:
-                    if not self._is_user_active(user_id):
-                        if not self._is_user_registered(user_id):
-                            answer_dict['text'] = 'Please log in.'
-                            return answer_dict
-                        else:
-                            # not active but registered user
-                            email = self._get_user_email_by_id(user_id)
-                            self._resume_login(user_id, email)
+                    if command in self._required_login_cmd_list:
+                        if not self._is_user_active(user_id):
+                            if not self._is_user_registered(user_id):
+                                answer_dict['text'] = 'Please log in.'
+                                return answer_dict
+                            else:
+                                # not active but registered user
+                                email = self._get_user_email_by_id(user_id)
+                                self._resume_login(user_id, email)
 
-                func = self._cmd_list.get(command, 'Unknown command.')
-                answer_dict['text'] = func(*input_data_list)
-            else:
-                answer_dict['text'] = 'Please use a command from the list.'
-            return answer_dict
-        except Exception as exc:
-            msg = 'Something went wrong in message processing {}'.format(exc)
-            logger.error(msg)
-            answer_dict['text'] = 'Something went wrong in message processing.'
-            return answer_dict
+                    func = self._cmd_list.get(command, 'Unknown command.')
+                    answer_dict['text'] = func(*input_data_list)
+                else:
+                    answer_dict['text'] = 'Please use a command from the list.'
+                return answer_dict
+            except Exception as exc:
+                logger.error(exc)
+                msg = 'Something went wrong in message processing'
+                answer_dict['text'] = msg
+                return answer_dict
