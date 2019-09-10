@@ -26,6 +26,7 @@ class GKeepHandler:
             self._keep_instance = gkeepapi.Keep()
             self._active_users_ids = []
             self._cmd_list = {
+                'start': self._start,
                 'help': self._help,
                 'log_in': self._log_in,
                 'log_out': self._log_out,
@@ -178,6 +179,9 @@ class GKeepHandler:
         help_text = 'To use this bot you need to get app password. ' \
             'Short guide here: {}'.format(guide_ref)
         return help_text
+
+    def _start(self, *args: tuple) -> str:
+        return 'Hello'
 
     def _is_command(self, recieved_data: dict) -> bool:
         if recieved_data.get('message') is not None:
