@@ -181,7 +181,7 @@ class GKeepHandler:
         return help_text
 
     def _start(self, *args: tuple) -> str:
-        return 'Hello'
+        return 'Hello. Pls use /help to know how to obtain Google Keep password.'
 
     def _is_command(self, recieved_data: dict) -> bool:
         if recieved_data.get('message') is not None:
